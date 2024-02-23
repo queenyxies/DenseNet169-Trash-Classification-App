@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         result = findViewById(R.id.result);
         imageView = findViewById(R.id.imageView);
 
+        imageView.setImageResource(R.drawable.recycle);
+
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
