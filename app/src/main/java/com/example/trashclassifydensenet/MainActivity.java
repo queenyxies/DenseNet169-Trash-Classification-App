@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void  classifyImage(Bitmap image) {
+    public void classifyImage(Bitmap image) {
         try {
             Model model = Model.newInstance(getApplicationContext());
 
@@ -119,28 +119,31 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(resultCode == RESULT_OK){
-            Bitmap image = (Bitmap) data.getExtras().get("data");
-            int dimension = Math.min(image.getWidth(), image.getHeight());
-            image = ThumbnailUtils.extractThumbnail(image, dimension, dimension);
-            imageView.setImageBitmap(image);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 3) {
+                Bitmap image = (Bitmap) data.getExtras().get("data");
+                int dimension = Math.min(image.getWidth(), image.getHeight());
+                image = ThumbnailUtils.extractThumbnail(image, dimension, dimension);
+                imageView.setImageBitmap(image);
 
-            image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);
-            classifyImage(image);
-        } else  {
-            Uri dat = data.getData();
-            Bitmap image = null;
-            try {
-                image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), dat);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);
+                classifyImage(image);
+            } else if (requestCode == 1 && data != null) { //Gallery
+                Uri dat = data.getData();
+                Bitmap image = null;
+                try {
+                    image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), dat);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                imageView.setImageBitmap(image);
+
+                image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);
+                classifyImage(image);
             }
-            imageView.setImageBitmap(image);
-
-            image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);
-            classifyImage(image);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
